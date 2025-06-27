@@ -1,6 +1,15 @@
 from function import new_board, check_turn, check_result
 import os
 
+class TicTacToe:
+    def __init__(self, n=3):
+        self.turn = 0
+        self.playing = True
+        self.n = n
+        self.total_spots = self.n * self.n
+        self.spots = [" " for _ in range(1, self.total_spots + 1)]
+        self.result = None
+        
 '''Function to reset the game state'''
 def reset_game(n):
     return {i: ' ' for i in range(1, n * n + 1)}, 0, True

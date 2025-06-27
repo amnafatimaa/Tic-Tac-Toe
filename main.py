@@ -1,69 +1,80 @@
-from function import new_board, check_turn, check_result
 import os
+from function import new_board, check_turn, check_result
 
 class TicTacToe:
+    """
+    A terminal-based Tic Tac Toe game that supports any board size (3x3 and up).
+    """
+
     def __init__(self, n=3):
+        self.n = n
+        self.total_spots = n * n
+        self.spots = {i: ' ' for i in range(1, self.total_spots + 1)}
         self.turn = 0
         self.playing = True
-        self.n = n
-        self.total_spots = self.n * self.n
-        self.spots = [" " for _ in range(1, self.total_spots + 1)]
         self.result = None
-        
-'''Function to reset the game state'''
-def reset_game(n):
-    return {i: ' ' for i in range(1, n * n + 1)}, 0, True
 
-restart = True
+    def reset_game(self, n=None):
+        """Resets the board and game state for a new round."""
+        if n:
+            self.n = n
+            self.total_spots = self.n * self.n
+        self.spots = {i: ' ' for i in range(1, self.total_spots + 1)}
+        self.turn = 0
+        self.playing = True
+        self.result = None
 
+    def play(self):
+        """Main game loop for playing the game."""
+        while self.playing:
+            os.system('cls' if os.name == 'nt' else 'clear')
+            self.result = check_result(self.spots, self.n)
 
-# Main game loop
-while restart:
-    os.system('cls' if os.name == 'nt' else 'clear')
-    n_input = input("Welcome to Tic Tac Toe! Select the number of rows and columns to play in (3 or more): ")
-    if not n_input.isdigit() or int(n_input) < 3:
-        print("Please enter a valid number (3 or greater).")
-        input("Press Enter to continue...")
-        continue
-    n = int(n_input)
-    spots, turn, playing = reset_game(n)
-    while playing:
-        os.system('cls' if os.name == 'nt' else 'clear')
-        result = check_result(spots, n)
-        new_board(spots, turn, result, n)
-        
-        if result:
-            print("Game over!")
-            continue_playing = input("Do you want to play again? (y/n): ").strip().lower()
-            if continue_playing == 'y':
-                break  # Restart and re-prompt for n
-            else:
-                print("Thanks for playing!")
-                playing = False
-                restart = False
+            # Show guide grid before first move
+            show_guide = (self.turn == 0)
+            new_board(self.spots, self.turn, self.result, self.n, show_guide=show_guide)
+
+            if self.result:
+                print("Game over!")
+                again = input("Do you want to play again? (y/n): ").strip().lower()
+                if again == 'y':
+                    self.reset_game()
+                    continue
+                else:
+                    print("Thanks for playing!")
+                    break
+
+            choice = input(f"Choose a spot (1–{self.total_spots}), or 'q' to quit: ").strip()
+
+            if choice == 'q':
+                self.playing = False
                 break
-        
-        choice = input(f"Choose a spot (1–{n*n}), 'q' to quit or 'r' to restart: ")
-        
-        if choice == 'q':
-            playing = False
-            restart = False
-            continue
 
-        if choice == 'r':
-            break  # Restart and re-prompt for n
+            if not choice.isdigit() or int(choice) not in self.spots:
+                print("Invalid input. Try again.")
+                input("Press Enter to continue...")
+                continue
 
-        if not choice.isdigit() or int(choice) not in spots:
-            print("Invalid input. Try again.")
+            choice = int(choice)
+
+            if self.spots[choice] in ['X', 'O']:
+                print("Spot already taken. Try again.")
+                input("Press Enter to continue...")
+                continue
+
+            self.spots[choice] = check_turn(self.turn)
+            self.turn += 1
+
+
+if __name__ == "__main__":
+    while True:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        n_input = input("Welcome to Tic Tac Toe! Select the number of rows and columns to play in (3 or more): ")
+        if not n_input.isdigit() or int(n_input) < 3:
+            print("Please enter a valid number (3 or greater).")
             input("Press Enter to continue...")
             continue
-
-        choice = int(choice)
-        # Checking if spot is already taken
-        if spots[choice] in ['X', 'O']:
-            print("Spot already taken. Try again.")
-            input("Press Enter to continue...")
-            continue
-
-        spots[choice] = check_turn(turn)
-        turn += 1
+        n = int(n_input)
+        game = TicTacToe(n)
+        game.play()
+        break

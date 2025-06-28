@@ -2,34 +2,28 @@
     Prints the game board to the terminal with optional result.
     
     Args:
-        spots (dict): The game board's current state.
-        turn (int): The current turn number.
-        result (str or None): The game's result (if any).
-        n (int): Board size (n x n).
+        spots (list): The game board's current state.
+        rows (int): Board size (rows x rows).
+        turn (int): Current turn number to determine if reference grid is shown.
 """
-def new_board(spots, turn, result=None, n=3,      show_guide=False):
+def new_board(spots, rows, turn):
     """
-    Display the game board. If show_guide is True, show cell numbers instead of X/O/blank.
+    Display the game board. Empty spots show their 1-based position number on first turn (turn=0), otherwise show blank.
     """
-    for row in range(n):
+    for row in range(rows):
         row_str = " | ".join(
-            str(row * n + col + 1) if show_guide else spots[row * n + col + 1]
-            for col in range(n)
+            spots[row * rows + col] if spots[row * rows + col] != " " else (str(row * rows + col + 1) if turn == 0 else " ")
+            for col in range(rows)
         )
         print(" " + row_str)
-        if row < n - 1:
-            print("---+" * (n - 1) + "---")
-
-    if result:
-        print(f"\nResult: {result}")
-    elif not show_guide:
-        print(f"\nPlayer turn: {check_turn(turn)}")
-
-def check_turn(turn):
-    """Return 'X' if turn is odd, 'O' if even."""
-    return 'X' if turn % 2 == 1 else 'O'
+        if row < rows - 1:
+            print("---+" * (rows - 1) + "---")
 
 def get_user_choice(current_player, total_spots):
+    """
+    Prompts player for a move or 'q' to quit.
+    Returns 0-based index or 'q'.
+    """
     while True:
         choice = input(f"\nPlayer {current_player}, choose a spot (1–{total_spots}) or 'q' to quit: ").strip()
         if choice.lower() == 'q':
@@ -37,16 +31,11 @@ def get_user_choice(current_player, total_spots):
         if choice.isdigit():
             choice = int(choice)
             if 1 <= choice <= total_spots:
-                return choice
+                return choice - 1  # Convert to 0-based index
         print("Invalid input. Try again.")
 
-def default_text():
-    while True:
-        n_input = input("Welcome to Tic Tac Toe! Select the number of rows and columns to play in (3 or more): ")
-        if not n_input.isdigit() or int(n_input) < 3:
-            print("Please enter a valid number (3 or greater).")
-            input("Press Enter to continue...")
-            continue
-        n = int(n_input)
-        # Make sure TicTacToe is defined or imported before this line
-        
+def display_result(result):
+    """
+    Display the game result.
+    """
+    print(f"\nResult: {result}")

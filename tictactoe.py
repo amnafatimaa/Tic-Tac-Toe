@@ -1,40 +1,34 @@
 class TicTacToe:
-    def __init__(self, n=3):
-        self.n = n
-        self.total_spots = n * n
-        self.spots = {i: ' ' for i in range(1, self.total_spots + 1)}
+    def __init__(self, rows=3):
+        self.rows = rows
+        self.total_spots = rows * rows
+        self.spots = [" " for _ in range(self.total_spots)]
         self.turn = 0
         self.playing = True
         self.result = None
 
-    
     """
-    Returns the symbol ('X' or 'O') for the current turn.
-    
+    Place player's symbol on the board if the move is valid.
     Args:
-        turn (int): The current turn number.
-    
+        choice (int): 0-based index of the spot.
+        player (str): 'X' or 'O'.
     Returns:
-        str: 'X' if even turn, 'O' if odd.
+        bool: True if move was valid, False otherwise.
     """
-    def player_turn(self):
-        return 'X' if self.turn % 2 == 0 else 'O'
+    def make_move(self, choice, player):
+        if 0 <= choice < self.total_spots and self.spots[choice] == " ":
+            self.spots[choice] = player
+            self.turn += 1
+            self.result = self.check_result()
+            return True
+        return False
 
-    def make_move(self, choice):
-        if self.spots[choice] in ['X', 'O']:
-            return False
-        self.spots[choice] = self.player_turn()
-        self.turn += 1
-        self.result = self.check_result()
-        return True
-    
-    
     """
     Checks if a player has won or if it's a draw.
     
     Args:
-        spots (dict): Current state of the board.
-        n (int): Size of the board.
+        spots (list): Current state of the board.
+        rows (int): Size of the board.
     
     Returns:
         str or None: Win message, 'Draw!', or None.
@@ -45,40 +39,40 @@ class TicTacToe:
         Returns 'X wins!', 'O wins!', 'Draw!', or None.
         """
         # Rows
-        for row in range(self.n):
-            start = row * self.n + 1
-            line = [self.spots[start + col] for col in range(self.n)]
-            if line.count(line[0]) == self.n and line[0] != " ":
-                return f"{line[0]} wins!"
+        for row in range(self.rows):
+            start = row * self.rows
+            if all(self.spots[start + col] == self.spots[start] for col in range(self.rows)) and self.spots[start] != " ":
+                self.playing = False
+                return f"{self.spots[start]} wins!"
 
         # Columns
-        for col in range(self.n):
-            line = [self.spots[col + 1 + row * self.n] for row in range(self.n)]
-            if line.count(line[0]) == self.n and line[0] != " ":
-                return f"{line[0]} wins!"
+        for col in range(self.rows):
+            if all(self.spots[row * self.rows + col] == self.spots[col] for row in range(self.rows)) and self.spots[col] != " ":
+                self.playing = False
+                return f"{self.spots[col]} wins!"
 
         # Diagonal (top-left to bottom-right)
-        line = [self.spots[1 + i * (self.n + 1)] for i in range(self.n)]
-        if line.count(line[0]) == self.n and line[0] != " ":
-            return f"{line[0]} wins!"
+        if all(self.spots[i * (self.rows + 1)] == self.spots[0] for i in range(self.rows)) and self.spots[0] != " ":
+            self.playing = False
+            return f"{self.spots[0]} wins!"
 
         # Diagonal (top-right to bottom-left)
-        line = [self.spots[self.n + i * (self.n - 1)] for i in range(self.n)]
-        if line.count(line[0]) == self.n and line[0] != " ":
-            return f"{line[0]} wins!"
+        if all(self.spots[(i + 1) * (self.rows - 1)] == self.spots[self.rows - 1] for i in range(self.rows)) and self.spots[self.rows - 1] != " ":
+            self.playing = False
+            return f"{self.spots[self.rows - 1]} wins!"
 
         # Draw
-        if all(self.spots[i] != " " for i in range(1, self.n * self.n + 1)):
+        if all(spot != " " for spot in self.spots):
+            self.playing = False
             return "Draw!"
 
         return None
 
-    def reset_game(self, n=None):
+    def reset_game(self, rows=None):
         """Resets the board and game state for a new round."""
-        if n:
-            self.n = n
-            self.total_spots = n * n
-            self.spots = {i: ' ' for i in range(1, self.total_spots + 1)}
-            self.turn = 0
-            self.result = None
-            self.playing = True
+        self.rows = rows if rows is not None else self.rows
+        self.total_spots = self.rows * self.rows
+        self.spots = [" " for _ in range(self.total_spots)]
+        self.turn = 0
+        self.result = None
+        self.playing = True

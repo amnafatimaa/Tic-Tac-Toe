@@ -19,7 +19,7 @@ def new_board(spots, rows, turn):
         if row < rows - 1:
             print("---+" * (rows - 1) + "---")
 
-def get_user_choice(current_player, total_spots):
+def get_user_choice(current_player, total_spots)-> int | str:
     """
     Prompts player for a move or 'q' to quit.
     Returns 0-based index or 'q'.

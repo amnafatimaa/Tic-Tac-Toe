@@ -7,15 +7,16 @@ class TicTacToe:
         self.playing = True
         self.result = None
 
-    """
-    Place player's symbol on the board if the move is valid.
-    Args:
+    
+    def make_move(self, choice, player) -> bool:
+        """
+        Place player's symbol on the board if the move is valid.
+        Args:
         choice (int): 0-based index of the spot.
         player (str): 'X' or 'O'.
-    Returns:
+        Returns:
         bool: True if move was valid, False otherwise.
-    """
-    def make_move(self, choice, player):
+        """
         if 0 <= choice < self.total_spots and self.spots[choice] == " ":
             self.spots[choice] = player
             self.turn += 1
@@ -23,21 +24,19 @@ class TicTacToe:
             return True
         return False
 
-    """
-    Checks if a player has won or if it's a draw.
-    
-    Args:
-        spots (list): Current state of the board.
-        rows (int): Size of the board.
-    
-    Returns:
-        str or None: Win message, 'Draw!', or None.
-    """
-    def check_result(self):
+   
+    def check_result(self) -> str | None:
         """
-        Checks win or draw conditions.
-        Returns 'X wins!', 'O wins!', 'Draw!', or None.
+        Checks if a player has won or if it's a draw.
+
+        Args:
+            spots (list): Current state of the board.
+            rows (int): Size of the board.
+
+        Returns:
+            str or None: Win message, 'Draw!', or None.
         """
+        
         # Rows
         for row in range(self.rows):
             start = row * self.rows
@@ -65,9 +64,8 @@ class TicTacToe:
         if all(spot != " " for spot in self.spots):
             self.playing = False
             return "Draw!"
-
+        
         return None
-
     def reset_game(self, rows=None):
         """Resets the board and game state for a new round."""
         self.rows = rows if rows is not None else self.rows

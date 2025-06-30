@@ -1,4 +1,3 @@
-
 class TicTacToe:
     def __init__(self, rows=3):
         self.rows = rows
@@ -20,12 +19,11 @@ class TicTacToe:
         """
         if 0 <= choice < self.total_spots and self.spots[choice] == " ":
             self.spots[choice] = player
-            self.turn += 1
             self.result = self.check_result()
             return True
         return False
 
-   
+    
     def check_result(self) -> str | None:
         """
         Checks if a player has won or if it's a draw.
@@ -67,6 +65,7 @@ class TicTacToe:
             return "Draw!"
         
         return None
+    
     def reset_game(self, rows=None):
         """Resets the board and game state for a new round."""
         self.rows = rows if rows is not None else self.rows

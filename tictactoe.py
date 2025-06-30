@@ -1,3 +1,4 @@
+
 class TicTacToe:
     def __init__(self, rows=3):
         self.rows = rows

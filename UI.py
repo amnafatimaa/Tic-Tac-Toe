@@ -1,13 +1,11 @@
-"""
+def new_board(spots, rows, turn):
+    """
     Prints the game board to the terminal with optional result.
     
     Args:
         spots (list): The game board's current state.
         rows (int): Board size (rows x rows).
         turn (int): Current turn number to determine if reference grid is shown.
-"""
-def new_board(spots, rows, turn):
-    """
     Display the game board. Empty spots show their 1-based position number on first turn (turn=0), otherwise show blank.
     """
     for row in range(rows):

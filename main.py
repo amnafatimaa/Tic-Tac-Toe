@@ -1,6 +1,7 @@
 import os
 from tictactoe import TicTacToe
 from UI import new_board, get_user_choice, display_result
+import constants
 
 def main():
     print("Welcome to Terminal Tic Tac Toe!")
@@ -11,7 +12,7 @@ def main():
     while game.playing:
         os.system('cls' if os.name == 'nt' else 'clear')  # Clear the terminal screen
         new_board(game.spots, game.rows, game.turn)
-        player = 'X' if game.turn % 2 == 0 else 'O'
+        player = constants.X if game.turn % 2 == 0 else constants.O
         move = get_user_choice(player, game.total_spots)
         if move == 'q':
             print("Game quit.")
@@ -24,6 +25,3 @@ def main():
             new_board(game.spots, game.rows, game.turn)
             display_result(result)
             break
-
-if __name__ == "__main__":
-    main()
